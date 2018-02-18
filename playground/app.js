@@ -452,6 +452,9 @@ class App extends Component {
         <div className="col-sm-5">
           {this.state.form && (
             <Form
+              onComponentDidMount={({ formData }) =>
+                console.log("mounted with initial formData", formData)
+              }
               ArrayFieldTemplate={ArrayFieldTemplate}
               ObjectFieldTemplate={ObjectFieldTemplate}
               liveValidate={liveValidate}

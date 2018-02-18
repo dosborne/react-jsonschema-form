@@ -70,6 +70,12 @@ export default class Form extends Component {
     return shouldRender(this, nextProps, nextState);
   }
 
+  componentDidMount(){
+    if (this.props.onComponentDidMount) {
+      this.props.onComponentDidMount(this.state);
+    }
+  }
+
   validate(formData, schema) {
     const { validate, transformErrors } = this.props;
     return validateFormData(
@@ -261,5 +267,6 @@ if (process.env.NODE_ENV !== "production") {
     transformErrors: PropTypes.func,
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
+    onComponentDidMount: PropTypes.func
   };
 }
