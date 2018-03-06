@@ -28,7 +28,12 @@ export default class Form extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.getStateFromProps(nextProps));
+    var self = this;
+    this.setState(this.getStateFromProps(nextProps),() => {
+      if (self.props.componentWillReceiveProps) {
+        self.props.componentWillReceiveProps(self.state);
+      }
+    });
   }
 
   getStateFromProps(props) {
@@ -267,6 +272,7 @@ if (process.env.NODE_ENV !== "production") {
     transformErrors: PropTypes.func,
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
-    onComponentDidMount: PropTypes.func
+    onComponentDidMount: PropTypes.func,
+    componentWillReceiveProps: PropTypes.func
   };
 }
