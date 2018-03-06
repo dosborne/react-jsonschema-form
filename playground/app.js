@@ -455,8 +455,8 @@ class App extends Component {
               onComponentDidMount={({ formData }) =>
                 console.log("mounted with initial formData", formData)
               }
-              componentWillReceiveProps={({ formData }) =>
-                console.log("componentWillReceiveProps with formData", formData)
+              onComponentWillReceiveProps={({ formData }) =>
+                console.log("onComponentWillReceiveProps with formData", formData)
               }
               ArrayFieldTemplate={ArrayFieldTemplate}
               ObjectFieldTemplate={ObjectFieldTemplate}

@@ -30,8 +30,8 @@ export default class Form extends Component {
   componentWillReceiveProps(nextProps) {
     var self = this;
     this.setState(this.getStateFromProps(nextProps),() => {
-      if (self.props.componentWillReceiveProps) {
-        self.props.componentWillReceiveProps(self.state);
+      if (self.props.onComponentWillReceiveProps) {
+        self.props.onComponentWillReceiveProps(self.state);
       }
     });
   }
@@ -273,6 +273,6 @@ if (process.env.NODE_ENV !== "production") {
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
     onComponentDidMount: PropTypes.func,
-    componentWillReceiveProps: PropTypes.func
+    onComponentWillReceiveProps: PropTypes.func
   };
 }
