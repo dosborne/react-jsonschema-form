@@ -190,7 +190,10 @@ export function getDefaultFormState(_schema, formData, definitions = {}) {
     //formData is a boolean so just return it
     return formData;
   }
-
+  if(typeof(formData) == typeof("")){
+    //formData is a string so just return it
+    return formData;
+  }
   return formData || defaults;
 }
 

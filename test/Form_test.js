@@ -466,9 +466,11 @@ describe("Form", () => {
       type: "string",
       default: "foo",
     };
-
+    const uiSchema = {
+      "ui:emptyValue": "",
+    };
     it("should not set default when a text field is cleared", () => {
-      const { node } = createFormComponent({ schema, formData: "bar" });
+      const { node } = createFormComponent({ schema, uiSchema, formData: "bar" });
 
       Simulate.change(node.querySelector("input"), {
         target: { value: "" },
