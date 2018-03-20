@@ -541,7 +541,7 @@ class ArrayField extends Component {
       newFormData,
       items: items.map((item, index) => {
         const additional = index >= itemSchemas.length;
-        const newItem = getDefaultFormState(schema.additionalItems, item, definitions)
+        const newItem = additional?getDefaultFormState(schema.additionalItems, item, definitions):item;
         const itemSchema = additional
           ? retrieveSchema(schema.additionalItems, definitions, newItem)
           : itemSchemas[index];
