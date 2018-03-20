@@ -5,6 +5,7 @@ import {
   orderProperties,
   retrieveSchema,
   getDefaultRegistry,
+  getDefaultFormState,
 } from "../../utils";
 
 function DefaultObjectFieldTemplate(props) {
@@ -79,7 +80,9 @@ class ObjectField extends Component {
     } = this.props;
     const { definitions, fields, formContext } = registry;
     const { SchemaField, TitleField, DescriptionField } = fields;
-    const schema = retrieveSchema(this.props.schema, definitions, formData);
+
+    const newFormData = getDefaultFormState(this.props.schema, formData, definitions);
+    const schema = retrieveSchema(this.props.schema, definitions, newFormData);
     const title = schema.title === undefined ? name : schema.title;
     const description = uiSchema["ui:description"] || schema.description;
     let orderedProperties;
@@ -117,7 +120,7 @@ class ObjectField extends Component {
               uiSchema={uiSchema[name]}
               errorSchema={errorSchema[name]}
               idSchema={idSchema[name]}
-              formData={formData[name]}
+              formData={newFormData[name]}
               onChange={this.onPropertyChange(name)}
               onBlur={onBlur}
               onFocus={onFocus}
@@ -136,7 +139,7 @@ class ObjectField extends Component {
       idSchema,
       uiSchema,
       schema,
-      formData,
+      newFormData,
       formContext,
     };
     return <Template {...templateProps} />;

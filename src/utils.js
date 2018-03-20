@@ -186,6 +186,11 @@ export function getDefaultFormState(_schema, formData, definitions = {}) {
     // Override schema defaults with form data.
     return mergeObjects(defaults, formData);
   }
+  if(typeof(formData) == typeof(true)){
+    //formData is a boolean so just return it
+    return formData;
+  }
+
   return formData || defaults;
 }
 

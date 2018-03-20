@@ -365,15 +365,16 @@ class ArrayField extends Component {
       registry = getDefaultRegistry(),
       onBlur,
       onFocus,
-      idPrefix,
+      idPrefix
     } = this.props;
     const title = schema.title === undefined ? name : schema.title;
     const { ArrayFieldTemplate, definitions, fields, formContext } = registry;
     const { TitleField, DescriptionField } = fields;
-    const itemsSchema = retrieveSchema(schema.items, definitions);
+    const newFormData = getDefaultFormState(schema.items, formData, definitions);
+    const itemsSchema = retrieveSchema(schema.items, definitions,newFormData);
     const arrayProps = {
-      canAdd: this.canAddItem(formData),
-      items: formData.map((item, index) => {
+      canAdd: this.canAddItem(newFormData),
+      items: newFormData.map((item, index) => {
         const itemSchema = retrieveSchema(schema.items, definitions, item);
         const itemErrorSchema = errorSchema ? errorSchema[index] : undefined;
         const itemIdPrefix = idSchema.$id + "_" + index;
@@ -387,7 +388,7 @@ class ArrayField extends Component {
         return this.renderArrayFieldItem({
           index,
           canMoveUp: index > 0,
-          canMoveDown: index < formData.length - 1,
+          canMoveDown: index < newFormData.length - 1,
           itemSchema: itemSchema,
           itemIdSchema,
           itemErrorSchema,
@@ -410,7 +411,7 @@ class ArrayField extends Component {
       title,
       TitleField,
       formContext,
-      formData,
+      newFormData,
     };
 
     // Check if a custom render function was passed in
@@ -431,9 +432,9 @@ class ArrayField extends Component {
       onFocus,
       registry = getDefaultRegistry(),
     } = this.props;
-    const items = this.props.formData;
     const { widgets, definitions, formContext } = registry;
-    const itemsSchema = retrieveSchema(schema.items, definitions, formData);
+    const newFormData = getDefaultFormState(schema.items, formData, definitions);
+    const itemsSchema = retrieveSchema(schema.items, definitions, newFormData);
     const enumOptions = optionsList(itemsSchema);
     const { widget = "select", ...options } = {
       ...getUiOptions(uiSchema),
@@ -449,7 +450,7 @@ class ArrayField extends Component {
         onFocus={onFocus}
         options={options}
         schema={schema}
-        value={items}
+        value={newFormData}
         disabled={disabled}
         readonly={readonly}
         formContext={formContext}
@@ -512,15 +513,17 @@ class ArrayField extends Component {
       onBlur,
       onFocus,
     } = this.props;
-    const title = schema.title || name;
-    let items = this.props.formData;
     const { ArrayFieldTemplate, definitions, fields, formContext } = registry;
+    const title = schema.title || name;
+    const newFormData = getDefaultFormState(schema, formData, definitions);
+    let items = newFormData;
     const { TitleField } = fields;
-    const itemSchemas = schema.items.map((item, index) =>
-      retrieveSchema(item, definitions, formData[index])
-    );
+    const itemSchemas = schema.items.map((item, index) => {
+      return retrieveSchema(item, definitions, getDefaultFormState(item,  newFormData[index], definitions))
+    });
+
     const additionalSchema = allowAdditionalItems(schema)
-      ? retrieveSchema(schema.additionalItems, definitions, formData)
+      ? retrieveSchema(schema.additionalItems, definitions, getDefaultFormState(schema.additionalItems, newFormData, definitions))
       : null;
 
     if (!items || items.length < itemSchemas.length) {
@@ -535,18 +538,19 @@ class ArrayField extends Component {
       className: "field field-array field-array-fixed-items",
       disabled,
       idSchema,
-      formData,
+      newFormData,
       items: items.map((item, index) => {
         const additional = index >= itemSchemas.length;
+        const newItem = getDefaultFormState(schema.additionalItems, item, definitions)
         const itemSchema = additional
-          ? retrieveSchema(schema.additionalItems, definitions, item)
+          ? retrieveSchema(schema.additionalItems, definitions, newItem)
           : itemSchemas[index];
         const itemIdPrefix = idSchema.$id + "_" + index;
         const itemIdSchema = toIdSchema(
           itemSchema,
           itemIdPrefix,
           definitions,
-          item,
+          newItem,
           idPrefix
         );
         const itemUiSchema = additional
@@ -562,7 +566,7 @@ class ArrayField extends Component {
           canMoveUp: index >= itemSchemas.length + 1,
           canMoveDown: additional && index < items.length - 1,
           itemSchema,
-          itemData: item,
+          itemData: newItem,
           itemUiSchema,
           itemIdSchema,
           itemErrorSchema,

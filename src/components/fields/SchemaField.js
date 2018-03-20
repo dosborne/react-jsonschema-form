@@ -9,6 +9,7 @@ import {
   isFilesArray,
   deepEquals,
   getSchemaType,
+  getDefaultFormState,
 } from "../../utils";
 import UnsupportedField from "./UnsupportedField";
 
@@ -164,7 +165,8 @@ function SchemaFieldRender(props) {
     formContext,
     FieldTemplate = DefaultTemplate,
   } = registry;
-  const schema = retrieveSchema(props.schema, definitions, formData);
+  const newFormData = getDefaultFormState(props.schema, formData, definitions);
+  const schema = retrieveSchema(props.schema, definitions, newFormData);
   const FieldComponent = getFieldComponent(schema, uiSchema, idSchema, fields);
   const { DescriptionField } = fields;
   const disabled = Boolean(props.disabled || uiSchema["ui:disabled"]);
@@ -195,10 +197,12 @@ function SchemaFieldRender(props) {
 
   const { __errors, ...fieldErrorSchema } = errorSchema;
 
+  let newProps = {...props};
+  newProps.formData=newFormData;
   // See #439: uiSchema: Don't pass consumed class names to child components
   const field = (
     <FieldComponent
-      {...props}
+      {...newProps}
       schema={schema}
       uiSchema={{ ...uiSchema, classNames: undefined }}
       disabled={disabled}
