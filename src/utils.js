@@ -526,6 +526,11 @@ function withExactlyOneSubschema(
     return schema;
   }
   const subschema = validSubschemas[0];
+
+  if (subschema.not && Array.isArray(subschema.not.required)) {
+    subschema.not.required.forEach(key=>{delete formData[key];});
+  }
+
   const {
     [dependencyKey]: conditionPropertySchema,
     ...dependentSubschema

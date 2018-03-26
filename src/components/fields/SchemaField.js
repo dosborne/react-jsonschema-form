@@ -167,6 +167,7 @@ function SchemaFieldRender(props) {
   } = registry;
   const newFormData = getDefaultFormState(props.schema, formData, definitions);
   const schema = retrieveSchema(props.schema, definitions, newFormData);
+  const originalSchema=props.schema;
   const FieldComponent = getFieldComponent(schema, uiSchema, idSchema, fields);
   const { DescriptionField } = fields;
   const disabled = Boolean(props.disabled || uiSchema["ui:disabled"]);
@@ -203,6 +204,7 @@ function SchemaFieldRender(props) {
   const field = (
     <FieldComponent
       {...newProps}
+      originalSchema={originalSchema}
       schema={schema}
       uiSchema={{ ...uiSchema, classNames: undefined }}
       disabled={disabled}
