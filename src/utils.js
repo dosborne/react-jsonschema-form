@@ -138,6 +138,11 @@ function computeDefaults(schema, parentDefaults, definitions = {}) {
     // We need to recur for object schema inner default values.
     case "object":
       return Object.keys(schema.properties || {}).reduce((acc, key) => {
+        //fixes issue with incorrect defaults for schema properties that serve as placeholders due to uiOrdering requiring a placeholder
+        if(schema.properties[key].type===undefined){
+          return acc;
+        }
+
         // Compute the defaults for this node, with the parent defaults we might
         // have from a previous run: defaults[key].
         acc[key] = computeDefaults(
